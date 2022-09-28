@@ -1,3 +1,8 @@
+import models.Trainer;
+import options.AlgorithmProperties;
+import options.ApplicationProperties;
+import options.TaskProperties;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
@@ -18,5 +23,20 @@ public class Main {
             e.printStackTrace();
             return;
         }
+
+        final ApplicationProperties applicationProperties;
+        final AlgorithmProperties algorithmProperties;
+        final TaskProperties taskProperties;
+        try {
+            applicationProperties = new ApplicationProperties();
+            algorithmProperties = new AlgorithmProperties();
+            taskProperties = new TaskProperties();
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
+            return;
+        }
+
+        Trainer trainer = new Trainer();
+        trainer.train(applicationProperties, algorithmProperties, taskProperties);
     }
 }

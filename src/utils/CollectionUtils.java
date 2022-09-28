@@ -1,6 +1,8 @@
 package utils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class CollectionUtils {
@@ -13,6 +15,17 @@ public abstract class CollectionUtils {
             if (value.equals(array[i]))
                 return i;
         return -1;
+    }
+
+    public static int[][] split(int[] array) {
+        return split(array, array.length / 2);
+    }
+
+    public static int[][] split(int[] array, int index) {
+        final int size = array.length;
+        final int[] array1 = Arrays.copyOf(array, index);
+        final int[] array2 = Arrays.copyOfRange(array, index, size);
+        return new int[][]{array1, array2};
     }
 
     public static int[] sort(int[] array) {

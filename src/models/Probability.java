@@ -15,13 +15,17 @@ public class Probability {
         this.value = value;
     }
 
-    private static void check(double value){
+    private static void check(double value) {
         if (!(minValue <= value && value <= maxValue))
-            throw ExceptionUtils.newValueOutOfRange(value, minValue, maxValue);
+            throw ExceptionUtils.valueOutOfRange(value, minValue, maxValue);
     }
 
     public static Probability getRandom() {
         return new Probability(random.nextDouble());
+    }
+
+    public double getValue() {
+        return value;
     }
 
     public boolean isFired() {

@@ -8,6 +8,23 @@ import java.util.stream.IntStream;
 public abstract class RandomUtils {
     private final static Random random = new Random();
 
+    public static int[] getRandomPermutation(int length) {
+        int[] array = IntStream.range(0, length).toArray();
+        int index, temp;
+        Random random = new Random();
+        for (int i = array.length - 1; i > 0; i--) {
+            index = random.nextInt(i + 1);
+            temp = array[index];
+            array[index] = array[i];
+            array[i] = temp;
+        }
+        return array;
+    }
+
+    public static Integer[] getRandomPermutationBoxed(int length) {
+        return IntStream.of(getRandomPermutation(length)).boxed().toArray(Integer[]::new);
+    }
+
     public static int get(int minValue, int maxValue) {
         return minValue + random.nextInt(maxValue - minValue);
     }
