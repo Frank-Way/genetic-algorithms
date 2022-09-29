@@ -5,6 +5,8 @@ import utils.CollectionUtils;
 import utils.RandomUtils;
 import utils.Utils;
 
+import java.util.Arrays;
+
 public class ManyPointsCrossover extends Recombiner {
     private int[] pointsToCut;
     private int pointsCount;
@@ -18,15 +20,27 @@ public class ManyPointsCrossover extends Recombiner {
     }
 
     @Override
+    public String toString() {
+        return "ManyPointsCrossover{" +
+                "pointsToCut=" + Arrays.toString(pointsToCut) +
+                ", pointsCount=" + pointsCount +
+                '}';
+    }
+
+    @Override
     public Individual getFirstChild(Individual firstParent, Individual secondParent) {
+        logger.finer("Получение первого потомка многоточечным кроссинговером");
         randomInitPointsToCut(firstParent.getGenesCount());
+        logger.finest("Точки разреза: " + Arrays.toString(pointsToCut));
         return getChild(firstParent, secondParent, false);
     }
 
     @Override
     public Individual getSecondChild(Individual firstParent, Individual secondParent) {
+        logger.finer("Получение второго потомка многоточечным кроссинговером");
         if (pointsToCut == null)
             randomInitPointsToCut(firstParent.getGenesCount());
+        logger.finest("Точки разреза: " + Arrays.toString(pointsToCut));
         return getChild(firstParent, secondParent, true);
     }
 

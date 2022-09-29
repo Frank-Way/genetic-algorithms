@@ -14,4 +14,12 @@ public class FloatCoder extends Coder {
     public double decode(Object[] genes) {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "FloatCoder{" +
+                "minValue=" + minValue +
+                ", maxValue=" + maxValue +
+                '}';
+    }
 }

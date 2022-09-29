@@ -20,7 +20,16 @@ public class ManyGenesMutator extends OneGeneMutator {
     }
 
     @Override
+    public String toString() {
+        return "ManyGenesMutator{" +
+                "geneMutationProbability=" + geneMutationProbability +
+                ", individualMutationProbability=" + individualMutationProbability +
+                '}';
+    }
+
+    @Override
     public void mutate(Individual source) {
+        logger.finer("Выполнение мутации нескольких генов");
         source.mutate(individualMutationProbability, geneMutationProbability);
     }
 }

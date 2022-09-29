@@ -24,6 +24,7 @@ public class Main {
             return;
         }
 
+        logger.fine("Начало считывания настроек");
         final ApplicationProperties applicationProperties;
         final AlgorithmProperties algorithmProperties;
         final TaskProperties taskProperties;
@@ -31,12 +32,16 @@ public class Main {
             applicationProperties = new ApplicationProperties();
             algorithmProperties = new AlgorithmProperties();
             taskProperties = new TaskProperties();
+            logger.fine("Настройки успешно считаны");
         } catch (IOException e) {
             logger.severe(e.getMessage());
             return;
         }
 
+        logger.fine("Начало запуска обучения");
         Trainer trainer = new Trainer();
         trainer.train(applicationProperties, algorithmProperties, taskProperties);
+        logger.fine("Обучение завершено");
+        logger.fine("Завершение программы");
     }
 }

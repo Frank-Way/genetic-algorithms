@@ -24,6 +24,13 @@ public class Probability {
         return new Probability(random.nextDouble());
     }
 
+    @Override
+    public String toString() {
+        return "Probability{" +
+                "value=" + value +
+                '}';
+    }
+
     public double getValue() {
         return value;
     }

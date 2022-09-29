@@ -33,4 +33,12 @@ public class BinaryCoder extends Coder {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "BinaryCoder{" +
+                "minValue=" + minValue +
+                ", maxValue=" + maxValue +
+                '}';
+    }
 }

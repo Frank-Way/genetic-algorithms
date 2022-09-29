@@ -14,6 +14,13 @@ public class TriadicCrossover extends Recombiner {
     }
 
     @Override
+    public String toString() {
+        return "TriadicCrossover{" +
+                "mask=" + mask +
+                '}';
+    }
+
+    @Override
     public Individual getFirstChild(Individual firstParent, Individual secondParent) {
         mask = population.getIndividual(RandomUtils.get(0, population.getSize()));
         return getChild(firstParent, secondParent, false);

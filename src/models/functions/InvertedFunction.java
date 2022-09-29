@@ -11,4 +11,9 @@ public class InvertedFunction extends Function {
     public double calculate(double... arguments) {
         return -1.0 * source.calculate(arguments);
     }
+
+    @Override
+    public String toString() {
+        return source.toString();
+    }
 }

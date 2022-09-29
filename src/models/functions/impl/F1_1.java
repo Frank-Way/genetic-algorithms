@@ -12,4 +12,9 @@ public class F1_1 extends FunctionOneArg {
                 argument * argument +
                 3;
     }
+
+    @Override
+    public String toString() {
+        return "F1_1{y = f(x) = x^4 - x^2 + 3}";
+    }
 }

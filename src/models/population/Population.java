@@ -12,11 +12,14 @@ import utils.RandomUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Population {
+    private static final Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
     private final List<Individual> individuals;
 
     private final Function function;
@@ -80,11 +83,31 @@ public class Population {
         this.recombiner = recombiner;
     }
 
+    @Override
+    public String toString() {
+        return "Population{" +
+//                "individuals=" + individuals +
+                "function=" + function +
+                ", picker=" + picker +
+                ", mutator=" + mutator +
+                ", selector=" + selector +
+                ", recombiner=" + recombiner +
+                ", bestResult=" + bestResult +
+                ", bestIndividual=" + bestIndividual +
+                '}';
+    }
+
+    public String individualsToString() {
+        return "individuals=" + individuals;
+    }
+
     public void estimate() {
+        logger.finer("Начало оценки популяции");
         double bestResult = Double.MAX_VALUE;
         Individual bestIndividual = null;
         for (Individual individual : individuals) {
             double result = function.calculate(individual.getValues());
+            logger.finest("Оценка для особи: " + individual + "\n" + result);
             individual.setFitness(result);
             if (result < bestResult) {
                 bestResult = result;
@@ -93,6 +116,8 @@ public class Population {
         }
         this.bestIndividual = bestIndividual;
         this.bestResult = bestIndividual != null ? bestIndividual.getFitness() : Double.MAX_VALUE;
+        logger.finer("Наилучший результат после оценки всех особей: " + this.bestResult);
+        logger.finer("Завершение оценки популяции");
     }
 
     public Individual getIndividual(int index) {
@@ -111,41 +136,77 @@ public class Population {
     }
 
     public void sort() {
+        logger.finer("Начало сортировки популяции по пригодности");
         individuals.sort(Comparator.comparingDouble(Individual::getFitness));
+        logger.finer("Завершение сортировки популяции по пригодности");
     }
 
     public void mutate() {
-        for (Individual individual : individuals)
+        logger.finer("Начало мутации");
+        for (Individual individual : individuals) {
+            logger.finest("Мутация особи: " + individual);
             mutator.mutate(individual);
+            logger.finest("Мутировавшая особь: " + individual);
+        }
+        logger.finer("Завершение мутации");
     }
 
     public Population pick() {
-        return picker.pick(this);
+        logger.finer("Начало отбора особей для рекомбинации");
+        final Population picked = picker.pick(this);
+        logger.finer("Завершение отбора особей для рекомбинации");
+        return picked;
     }
 
     public Population recombine() {
+        logger.finer("Отбор особей для рекомбинации");
         final Population picked = pick();
+        logger.finer("Популяция отобранных особей: " + picked);
+        logger.finest("Отобранные особи: " + picked.individualsToString());
+
         final int[] indices = RandomUtils.getRandomPermutation(picked.getSize());
         final int halfSize = getSize() / 2;
         final int[][] splitIndices = CollectionUtils.split(indices, halfSize);
         final List<Individual> recombinedIndividuals = new ArrayList<>(this.getSize());
         Individual firstParent, secondParent;
+        Individual firstChild, secondChild;
+        logger.finer("Начало рекомбинации");
         for (int i = 0; i < halfSize; i++) {
             firstParent = picked.getIndividual(splitIndices[0][i]);
             secondParent = picked.getIndividual(splitIndices[1][i]);
-            recombinedIndividuals.add(recombiner.getFirstChild(firstParent, secondParent));
-            recombinedIndividuals.add(recombiner.getSecondChild(firstParent, secondParent));
+            logger.finest((i + 1) + " рекомбинация.");
+            logger.finest("Родитель 1: " + firstParent);
+            logger.finest("Родитель 2: " + secondParent);
+            firstChild = recombiner.getFirstChild(firstParent, secondParent);
+            secondChild = recombiner.getSecondChild(firstParent, secondParent);
+            logger.finest("Потомок 1: " + firstChild);
+            logger.finest("Потомок 2: " + secondChild);
+            recombinedIndividuals.add(firstChild);
+            recombinedIndividuals.add(secondChild);
         }
+        logger.finer("Завершение рекомбинации");
         final Population recombined = new Population(recombinedIndividuals, picker, mutator, function, selector);
         recombined.setRecombiner(recombiner);
         return recombined;
     }
 
     public Population select() {
+        logger.finer("Выполнение рекомбинации");
         final Population children = recombine();
+        logger.finer("Популяция потомков: " + children);
+        logger.finest("Потомки: " + children.individualsToString());
+
+        logger.finer("Мутация потомков");
         children.mutate();
+        logger.finer("Популяция потомков: " + children);
+        logger.finest("Потомки: " + children.individualsToString());
+
+        logger.finer("Формирование новой популяции");
         final Population selected = selector.select(this, children);
         selected.setRecombiner(recombiner);
+        logger.finer("Новоя популяция: " + selected);
+        logger.finest("Особи: " + selected.individualsToString());
+
         return selected;
     }
 
@@ -154,6 +215,7 @@ public class Population {
     }
 
     public Population merge(Population another) {
+        logger.finer("Начало слияния популяций");
         final Population merged = new Population(Stream.concat(this.individuals.stream(),
                 another.individuals.stream()).collect(Collectors.toList()),
                 picker, mutator, function, selector);
@@ -166,6 +228,7 @@ public class Population {
             merged.bestIndividual = this.bestIndividual;
         }
         merged.setRecombiner(recombiner);
+        logger.finer("Завершение слияния популяций");
         return merged;
     }
 }

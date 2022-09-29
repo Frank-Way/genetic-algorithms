@@ -25,7 +25,15 @@ public class EliteSelector extends Selector {
     }
 
     @Override
+    public String toString() {
+        return "EliteSelector{" +
+                "elitePart=" + elitePart +
+                '}';
+    }
+
+    @Override
     public Population select(Population parents, Population children) {
+        logger.finer("Выполнение элитарного отбора");
         final Population merged = parents.merge(children);
         if (merged.getBestIndividual() == null)
             merged.estimate();
@@ -37,6 +45,7 @@ public class EliteSelector extends Selector {
         final List<Individual> pickedIndividuals = picker.pick(merged).getIndividuals(RandomUtils.getDistinct(0, merged.getSize(), parents.getSize() - eliteSize));
         final Population picked = new Population(pickedIndividuals, result.getPicker(), result.getMutator(), result.getFunction(), result.getSelector());
         final Population selected = result.merge(picked);
+        logger.finer("Завершение элитарного отбора");
         return selected;
     }
 }

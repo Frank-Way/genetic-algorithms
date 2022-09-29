@@ -19,7 +19,15 @@ public class OneGeneMutator extends Mutator {
     }
 
     @Override
+    public String toString() {
+        return "OneGeneMutator{" +
+                "individualMutationProbability=" + individualMutationProbability +
+                '}';
+    }
+
+    @Override
     public void mutate(Individual source) {
+        logger.finer("Выполнение мутации одного гена");
         source.mutate(individualMutationProbability);
     }
 }

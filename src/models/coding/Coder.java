@@ -36,4 +36,7 @@ public abstract class Coder {
     protected abstract double decode(Object... genes);
 
     protected abstract Object[] code(int size, double value);
+
+    @Override
+    public abstract String toString();
 }
